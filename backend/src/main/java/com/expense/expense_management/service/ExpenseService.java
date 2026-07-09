@@ -8,6 +8,13 @@ import com.expense.expense_management.repository.EmployeeRepository;
 import com.expense.expense_management.repository.ExpenseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -20,7 +27,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final EmployeeRepository employeeRepository;
 
-    public ExpenseResponse saveExpense(ExpenseRequest request) {
+    public ExpenseResponse saveExpense(ExpenseRequest request, MultipartFile receipt) {
 
         Employee employee = employeeRepository.findById(request.getEmployeeId())
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
@@ -68,12 +75,37 @@ public class ExpenseService {
                     "Expense exceeds limit for Grade " + employee.getGrade());
         }
 
+        String fileName = null;
+
+        if (receipt != null && !receipt.isEmpty()) {
+
+            try {
+
+                fileName = UUID.randomUUID() + "_" + receipt.getOriginalFilename();
+
+                Path uploadPath = Paths.get("uploads");
+
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                Files.copy(
+                        receipt.getInputStream(),
+                        uploadPath.resolve(fileName)
+                );
+
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to upload receipt.");
+            }
+        }
+
         Expense expense = Expense.builder()
                 .employee(employee)
                 .category(request.getCategory())
                 .amount(request.getAmount())
                 .description(request.getDescription())
                 .expenseDate(request.getExpenseDate())
+                .receiptFileName(fileName)
                 .build();
 
         Expense saved = expenseRepository.save(expense);
@@ -84,7 +116,8 @@ public class ExpenseService {
                 saved.getAmount(),
                 saved.getDescription(),
                 saved.getExpenseDate(),
-                employee.getName()
+                employee.getName(),
+                saved.getReceiptFileName()
         );
     }
 
@@ -101,7 +134,8 @@ public class ExpenseService {
                         expense.getAmount(),
                         expense.getDescription(),
                         expense.getExpenseDate(),
-                        employee.getName()
+                        employee.getName(),
+                        expense.getReceiptFileName()
                 ))
                 .toList();
     }
@@ -116,7 +150,8 @@ public class ExpenseService {
                         expense.getAmount(),
                         expense.getDescription(),
                         expense.getExpenseDate(),
-                        expense.getEmployee().getName()
+                        expense.getEmployee().getName(),
+                        expense.getReceiptFileName()
                 ))
                 .toList();
     }

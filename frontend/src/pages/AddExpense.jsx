@@ -18,6 +18,7 @@ function AddExpense() {
 
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
+    const [receipt, setReceipt] = useState(null);
 
     const handleChange = (e) => {
         setFormData({
@@ -32,7 +33,19 @@ function AddExpense() {
 
         try {
 
-            const response = await api.post("/api/expenses", formData);
+            const formDataToSend = new FormData();
+
+            formDataToSend.append("employeeId", formData.employeeId);
+            formDataToSend.append("category", formData.category);
+            formDataToSend.append("amount", formData.amount);
+            formDataToSend.append("description", formData.description);
+            formDataToSend.append("expenseDate", formData.expenseDate);
+            formDataToSend.append("receipt", receipt);
+
+            const response = await api.post(
+                "/api/expenses",
+                formDataToSend
+            );
 
             console.log(response.data);
 
@@ -63,7 +76,10 @@ function AddExpense() {
 
         <div className="container mt-5">
 
-            <div className="card shadow p-4 mx-auto" style={{ maxWidth: "600px" }}>
+            <div
+                className="card shadow p-4 mx-auto"
+                style={{ maxWidth: "600px" }}
+            >
 
                 <h2 className="text-center mb-4">
                     Add Expense
@@ -138,6 +154,22 @@ function AddExpense() {
                             name="expenseDate"
                             value={formData.expenseDate}
                             onChange={handleChange}
+                            required
+                        />
+
+                    </div>
+
+                    <div className="mb-3">
+
+                        <label className="form-label">
+                            Receipt
+                        </label>
+
+                        <input
+                            type="file"
+                            className="form-control"
+                            accept=".jpg,.jpeg,.png,.pdf"
+                            onChange={(e) => setReceipt(e.target.files[0])}
                             required
                         />
 

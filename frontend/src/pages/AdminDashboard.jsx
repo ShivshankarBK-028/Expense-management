@@ -67,81 +67,119 @@ function AdminDashboard() {
     }
 
     const totalEmployees = new Set(
-    expenses.map(expense => expense.employeeName)
-).size;
+        expenses.map(expense => expense.employeeName)
+    ).size;
 
-const totalExpenseRecords = expenses.length;
+    const totalExpenseRecords = expenses.length;
 
-const categoryData = Object.values(
+    const categoryData = Object.values(
 
-    expenses.reduce((acc, expense) => {
+        expenses.reduce((acc, expense) => {
 
-        if (!acc[expense.category]) {
+            if (!acc[expense.category]) {
 
-            acc[expense.category] = {
-                name: expense.category,
-                value: 0
-            };
+                acc[expense.category] = {
+                    name: expense.category,
+                    value: 0
+                };
 
-        }
+            }
 
-        acc[expense.category].value += Number(expense.amount);
+            acc[expense.category].value += Number(expense.amount);
 
-        return acc;
+            return acc;
 
-    }, {})
+        }, {})
 
-);
+    );
 
-const COLORS = [
-    "#0088FE",
-    "#00C49F",
-    "#FFBB28",
-    "#FF8042",
-    "#AF19FF",
-    "#FF4560"
-];
+    const COLORS = [
+        "#0088FE",
+        "#00C49F",
+        "#FFBB28",
+        "#FF8042",
+        "#AF19FF",
+        "#FF4560"
+    ];
 
     return (
 
-    <div className="container mt-4">
+        <div className="container mt-4">
 
-        <div className="d-flex justify-content-between align-items-center mb-4">
+            <div className="d-flex justify-content-between align-items-center mb-4">
 
-            <div>
+                <div>
 
-                <h2>Welcome, {user.name}</h2>
+                    <h2>Welcome, {user.name}</h2>
 
-                <p className="text-muted">
-                    Administrator Dashboard
-                </p>
+                    <p className="text-muted">
+                        Administrator Dashboard
+                    </p>
+
+                </div>
+
+                <button
+                    className="btn btn-danger"
+                    onClick={logout}
+                >
+                    Logout
+                </button>
 
             </div>
 
-            <button
-                className="btn btn-danger"
-                onClick={logout}
-            >
-                Logout
-            </button>
+            {/* KPI Cards */}
 
-        </div>
+            <div className="row mb-4">
 
-        {/* KPI Cards */}
+                <div className="col-md-4 mb-3">
 
-        <div className="row mb-4">
+                    <div className="card text-center shadow border-primary">
 
-            <div className="col-md-4 mb-3">
+                        <div className="card-body">
 
-                <div className="card text-center shadow border-primary">
+                            <h6>Total Expenses</h6>
 
-                    <div className="card-body">
+                            <h3 className="text-primary">
+                                ₹{totalExpense.toFixed(2)}
+                            </h3>
 
-                        <h6>Total Expenses</h6>
+                        </div>
 
-                        <h3 className="text-primary">
-                            ₹{totalExpense.toFixed(2)}
-                        </h3>
+                    </div>
+
+                </div>
+
+                <div className="col-md-4 mb-3">
+
+                    <div className="card text-center shadow border-success">
+
+                        <div className="card-body">
+
+                            <h6>Total Employees</h6>
+
+                            <h3 className="text-success">
+                                {totalEmployees}
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div className="col-md-4 mb-3">
+
+                    <div className="card text-center shadow border-warning">
+
+                        <div className="card-body">
+
+                            <h6>Expense Records</h6>
+
+                            <h3 className="text-warning">
+                                {totalExpenseRecords}
+                            </h3>
+
+                        </div>
 
                     </div>
 
@@ -149,94 +187,58 @@ const COLORS = [
 
             </div>
 
-            <div className="col-md-4 mb-3">
+            {/* Pie Chart */}
 
-                <div className="card text-center shadow border-success">
+            <div className="row mb-4">
 
-                    <div className="card-body">
+                <div className="col-lg-6 mx-auto">
 
-                        <h6>Total Employees</h6>
+                    <div className="card shadow">
 
-                        <h3 className="text-success">
-                            {totalEmployees}
-                        </h3>
+                        <div className="card-header text-center">
 
-                    </div>
+                            <h5>Expense Distribution by Category</h5>
 
-                </div>
+                        </div>
 
-            </div>
+                        <div className="card-body">
 
-            <div className="col-md-4 mb-3">
+                            <ResponsiveContainer width="100%" height={320}>
 
-                <div className="card text-center shadow border-warning">
+                                <PieChart>
 
-                    <div className="card-body">
+                                    <Pie
+                                        data={categoryData}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        outerRadius={110}
+                                        label
+                                    >
 
-                        <h6>Expense Records</h6>
+                                        {
 
-                        <h3 className="text-warning">
-                            {totalExpenseRecords}
-                        </h3>
+                                            categoryData.map((entry, index) => (
 
-                    </div>
+                                                <Cell
+                                                    key={index}
+                                                    fill={COLORS[index % COLORS.length]}
+                                                />
 
-                </div>
+                                            ))
 
-            </div>
+                                        }
 
-        </div>
+                                    </Pie>
 
-        {/* Pie Chart */}
+                                    <Tooltip />
 
-        <div className="row mb-4">
+                                    <Legend />
 
-            <div className="col-lg-6 mx-auto">
+                                </PieChart>
 
-                <div className="card shadow">
+                            </ResponsiveContainer>
 
-                    <div className="card-header text-center">
-
-                        <h5>Expense Distribution by Category</h5>
-
-                    </div>
-
-                    <div className="card-body">
-
-                        <ResponsiveContainer width="100%" height={320}>
-
-                            <PieChart>
-
-                                <Pie
-                                    data={categoryData}
-                                    dataKey="value"
-                                    nameKey="name"
-                                    outerRadius={110}
-                                    label
-                                >
-
-                                    {
-
-                                        categoryData.map((entry, index) => (
-
-                                            <Cell
-                                                key={index}
-                                                fill={COLORS[index % COLORS.length]}
-                                            />
-
-                                        ))
-
-                                    }
-
-                                </Pie>
-
-                                <Tooltip />
-
-                                <Legend />
-
-                            </PieChart>
-
-                        </ResponsiveContainer>
+                        </div>
 
                     </div>
 
@@ -244,100 +246,122 @@ const COLORS = [
 
             </div>
 
-        </div>
+            {/* Expense Table */}
 
-        {/* Expense Table */}
+            <div className="card shadow">
 
-        <div className="card shadow">
+                <div className="card-header">
 
-            <div className="card-header">
+                    <h3 className="text-center">
+                        All Employee Expenses
+                    </h3>
 
-                <h3 className="text-center">
-                    All Employee Expenses
-                </h3>
+                </div>
 
-            </div>
+                <div className="card-body">
 
-            <div className="card-body">
+                    <table className="table table-striped table-hover">
 
-                <table className="table table-striped table-hover">
-
-                    <thead className="table-dark">
-
-                    <tr>
-
-                        <th>Employee</th>
-                        <th>Category</th>
-                        <th>Amount</th>
-                        <th>Description</th>
-                        <th>Date</th>
-
-                    </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                    {
-
-                        expenses.length === 0 ?
+                        <thead className="table-dark">
 
                             <tr>
 
-                                <td
-                                    colSpan="5"
-                                    className="text-center"
-                                >
-                                    No expenses found.
-                                </td>
+                                <th>Employee</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                                <th>Receipt</th>
 
                             </tr>
 
-                            :
+                        </thead>
 
-                            expenses.map((expense) => (
+                        <tbody>
 
-                                <tr key={expense.id}>
+                            {
 
-                                    <td>{expense.employeeName}</td>
+                                expenses.length === 0 ?
 
-                                    <td>{expense.category}</td>
+                                    <tr>
 
-                                    <td>
-                                        ₹{Number(expense.amount).toFixed(2)}
-                                    </td>
+                                        <td
+                                            colSpan="6"
+                                            className="text-center"
+                                        >
+                                            No expenses found.
+                                        </td>
 
-                                    <td>{expense.description}</td>
+                                    </tr>
 
-                                    <td>{expense.expenseDate}</td>
+                                    :
 
-                                </tr>
+                                    expenses.map((expense) => (
 
-                            ))
+                                        <tr key={expense.id}>
 
-                    }
+                                            <td>{expense.employeeName}</td>
 
-                    </tbody>
+                                            <td>{expense.category}</td>
 
-                </table>
+                                            <td>
+                                                ₹{Number(expense.amount).toFixed(2)}
+                                            </td>
 
-            </div>
+                                            <td>{expense.description}</td>
 
-            <div className="card-footer">
+                                            <td>{expense.expenseDate}</td>
 
-                <h5 className="mb-0">
+                                            <td>
 
-                    Total Expenses : ₹{totalExpense.toFixed(2)}
+                                                {expense.receiptFileName ? (
 
-                </h5>
+                                                    <a
+                                                        href={`http://localhost:8080/uploads/${expense.receiptFileName}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="btn btn-sm btn-primary"
+                                                    >
+                                                        View
+                                                    </a>
+
+                                                ) : (
+
+                                                    <span className="text-muted">
+                                                        No Receipt
+                                                    </span>
+
+                                                )}
+
+                                            </td>
+
+                                        </tr>
+
+                                    ))
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div className="card-footer">
+
+                    <h5 className="mb-0">
+
+                        Total Expenses : ₹{totalExpense.toFixed(2)}
+
+                    </h5>
+
+                </div>
 
             </div>
 
         </div>
 
-    </div>
-
-);
+    );
 
 }
 

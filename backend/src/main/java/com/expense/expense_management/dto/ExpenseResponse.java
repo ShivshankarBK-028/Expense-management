@@ -22,4 +22,6 @@ public class ExpenseResponse {
     private LocalDate expenseDate;
 
     private String employeeName;
+
+    private String receiptFileName;
 }

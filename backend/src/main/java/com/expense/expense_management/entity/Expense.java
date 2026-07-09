@@ -40,4 +40,6 @@ public class Expense {
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
+
+    private String receiptFileName;
 }

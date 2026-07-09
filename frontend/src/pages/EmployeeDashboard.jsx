@@ -39,7 +39,7 @@ function EmployeeDashboard() {
             loadExpenses();
         }
 
-    },[]);
+    }, []);
 
     const logout = () => {
 
@@ -111,6 +111,7 @@ function EmployeeDashboard() {
                                 <th>Amount</th>
                                 <th>Description</th>
                                 <th>Date</th>
+                                <th>Receipt</th>
                             </tr>
 
                         </thead>
@@ -121,7 +122,7 @@ function EmployeeDashboard() {
 
                                 <tr>
 
-                                    <td colSpan="4" className="text-center">
+                                    <td colSpan="5" className="text-center">
                                         No expenses found.
                                     </td>
 
@@ -137,6 +138,29 @@ function EmployeeDashboard() {
                                         <td>₹{expense.amount}</td>
                                         <td>{expense.description}</td>
                                         <td>{expense.expenseDate}</td>
+
+                                        <td>
+
+                                            {expense.receiptFileName ? (
+
+                                                <a
+                                                    href={`http://localhost:8080/uploads/${expense.receiptFileName}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="btn btn-sm btn-primary"
+                                                >
+                                                    View
+                                                </a>
+
+                                            ) : (
+
+                                                <span className="text-muted">
+                                                    No Receipt
+                                                </span>
+
+                                            )}
+
+                                        </td>
 
                                     </tr>
 

@@ -24,7 +24,7 @@ public class DataInitializer implements CommandLineRunner {
                     .name("Admin")
                     .email("admin@test.com")
                     .password(passwordEncoder.encode("admin123"))
-                    .grade("A")
+                    .grade("10")
                     .role(Role.ADMIN)
                     .build();
 
@@ -32,7 +32,7 @@ public class DataInitializer implements CommandLineRunner {
                     .name("Rahul")
                     .email("rahul@test.com")
                     .password(passwordEncoder.encode("rahul123"))
-                    .grade("B")
+                    .grade("1")
                     .role(Role.EMPLOYEE)
                     .build();
 
@@ -40,13 +40,22 @@ public class DataInitializer implements CommandLineRunner {
                     .name("Priya")
                     .email("priya@test.com")
                     .password(passwordEncoder.encode("priya123"))
-                    .grade("C")
+                    .grade("5")
+                    .role(Role.EMPLOYEE)
+                    .build();
+
+            Employee emp3 = Employee.builder()
+                    .name("Amit")
+                    .email("amit@test.com")
+                    .password(passwordEncoder.encode("amit123"))
+                    .grade("10")
                     .role(Role.EMPLOYEE)
                     .build();
 
             employeeRepository.save(admin);
             employeeRepository.save(emp1);
             employeeRepository.save(emp2);
+            employeeRepository.save(emp3);
 
             System.out.println("Sample employees inserted successfully!");
         }

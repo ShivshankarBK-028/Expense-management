@@ -63,7 +63,7 @@ function AddExpense() {
             setIsError(true);
 
             if (error.response) {
-                setMessage("Expense could not be submitted. Please check your data.");
+                setMessage(error.response.data);
             } else {
                 setMessage("Unable to connect to the backend.");
             }
@@ -195,6 +195,22 @@ function AddExpense() {
                 )}
 
             </div>
+
+            <button
+    className="btn btn-success rounded-circle shadow"
+    style={{
+        position: "fixed",
+        bottom: "25px",
+        right: "25px",
+        width: "65px",
+        height: "65px",
+        fontSize: "30px",
+        zIndex: 1000
+    }}
+    onClick={() => navigate("/chat")}
+>
+    💬
+</button>
 
         </div>
 
